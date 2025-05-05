@@ -41,7 +41,7 @@ export const notionBlogs: NotionBlog[] = [
 export function getBlogById(id: string): NotionBlog | undefined {
   return notionBlogs.find(blog => blog.id === id);
 }
-
+ 
 // Function to get all blogs
 export function getAllBlogs(): NotionBlog[] {
   return notionBlogs;
