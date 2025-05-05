@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import NovelEditorWrapper from '@/components/NovelEditorWrapper';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import StorageLimitDialog from '@/components/StorageLimitDialog';
 
-export default function EditBlogPage({ params }: { params: { id: string } }) {
+export default function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -22,7 +22,11 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await fetch(`/api/blogs/${params.id}`);
+        // Resolve the params Promise
+        const resolvedParams = await params;
+        const blogId = resolvedParams.id;
+
+        const response = await fetch(`/api/blogs/${blogId}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch blog');
@@ -41,7 +45,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     };
 
     fetchBlog();
-  }, [params.id, router]);
+  }, [params, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +63,11 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/blogs/${params.id}`, {
+      // Resolve the params Promise
+      const resolvedParams = await params;
+      const blogId = resolvedParams.id;
+
+      const response = await fetch(`/api/blogs/${blogId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +81,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
       }
 
       toast.success('Blog updated successfully');
-      router.push(`/view/${params.id}`);
+      router.push(`/view/${blogId}`);
       router.refresh();
     } catch (error) {
       console.error('Error updating blog:', error);
@@ -93,7 +101,11 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/blogs/${params.id}`, {
+      // Resolve the params Promise
+      const resolvedParams = await params;
+      const blogId = resolvedParams.id;
+
+      const response = await fetch(`/api/blogs/${blogId}`, {
         method: 'DELETE',
       });
 

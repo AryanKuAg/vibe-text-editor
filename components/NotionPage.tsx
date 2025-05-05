@@ -40,7 +40,7 @@ interface NotionPageProps {
   rootPageId?: string;
 }
 
-const NotionPage: FC<NotionPageProps> = ({ recordMap, rootPageId }) => {
+const NotionPage: FC<NotionPageProps> = ({ recordMap }) => {
   if (!recordMap) {
     return <div className="p-8">Loading...</div>;
   }
@@ -66,8 +66,8 @@ const NotionPage: FC<NotionPageProps> = ({ recordMap, rootPageId }) => {
         previewImages={true}
         showCollectionViewDropdown={true}
         minTableOfContentsItems={0}
-        defaultPageIcon={null}
-        defaultPageCover={null}
+        defaultPageIcon={undefined}
+        defaultPageCover={undefined}
         defaultPageCoverPosition={0}
       />
     </div>

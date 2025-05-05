@@ -35,7 +35,7 @@ const items: SelectorItem[] = [
     icon: TextIcon,
     command: (editor) => editor?.chain().focus().toggleNode('paragraph', 'paragraph').run(),
     isActive: (editor) =>
-      editor?.isActive('paragraph') &&
+      !!editor?.isActive('paragraph') &&
       !editor?.isActive('bulletList') &&
       !editor?.isActive('orderedList'),
   },
@@ -43,50 +43,50 @@ const items: SelectorItem[] = [
     name: 'Heading 1',
     icon: Heading1,
     command: (editor) => editor?.chain().focus().toggleHeading({ level: 1 }).run(),
-    isActive: (editor) => editor?.isActive('heading', { level: 1 }),
+    isActive: (editor) => !!editor?.isActive('heading', { level: 1 }),
   },
   {
     name: 'Heading 2',
     icon: Heading2,
     command: (editor) => editor?.chain().focus().toggleHeading({ level: 2 }).run(),
-    isActive: (editor) => editor?.isActive('heading', { level: 2 }),
+    isActive: (editor) => !!editor?.isActive('heading', { level: 2 }),
   },
   {
     name: 'Heading 3',
     icon: Heading3,
     command: (editor) => editor?.chain().focus().toggleHeading({ level: 3 }).run(),
-    isActive: (editor) => editor?.isActive('heading', { level: 3 }),
+    isActive: (editor) => !!editor?.isActive('heading', { level: 3 }),
   },
   {
     name: 'To-do List',
     icon: CheckSquare,
     command: (editor) => editor?.chain().focus().toggleTaskList().run(),
-    isActive: (editor) => editor?.isActive('taskItem'),
+    isActive: (editor) => !!editor?.isActive('taskItem'),
   },
   {
     name: 'Bullet List',
     icon: List,
     command: (editor) => editor?.chain().focus().toggleBulletList().run(),
-    isActive: (editor) => editor?.isActive('bulletList'),
+    isActive: (editor) => !!editor?.isActive('bulletList'),
   },
   {
     name: 'Numbered List',
     icon: ListOrdered,
     command: (editor) => editor?.chain().focus().toggleOrderedList().run(),
-    isActive: (editor) => editor?.isActive('orderedList'),
+    isActive: (editor) => !!editor?.isActive('orderedList'),
   },
   {
     name: 'Quote',
     icon: TextQuote,
     command: (editor) =>
       editor?.chain().focus().toggleNode('paragraph', 'paragraph').toggleBlockquote().run(),
-    isActive: (editor) => editor?.isActive('blockquote'),
+    isActive: (editor) => !!editor?.isActive('blockquote'),
   },
   {
     name: 'Code',
     icon: Code,
     command: (editor) => editor?.chain().focus().toggleCodeBlock().run(),
-    isActive: (editor) => editor?.isActive('codeBlock'),
+    isActive: (editor) => !!editor?.isActive('codeBlock'),
   },
 ];
 

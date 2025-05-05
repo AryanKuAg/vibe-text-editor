@@ -7,7 +7,6 @@ import {
     GlobalDragHandle,
     HighlightExtension,
     HorizontalRule,
-    MarkdownExtension,
     Mathematics,
     Placeholder,
     StarterKit,
@@ -22,10 +21,10 @@ import {
     UploadImagesPlugin,
     Youtube,
   } from "novel";
-  
+
   import { cx } from "class-variance-authority";
   import { common, createLowlight } from "lowlight";
-  
+
   //TODO I am using cx here to get tailwind autocomplete working, idk if someone else can write a regex to just capture the class key in objects
   const aiHighlight = AIHighlight;
   //You can overwrite the placeholder with your own configuration
@@ -37,7 +36,7 @@ import {
       ),
     },
   });
-  
+
   const tiptapImage = TiptapImage.extend({
     addProseMirrorPlugins() {
       return [
@@ -52,13 +51,13 @@ import {
       class: cx("rounded-lg border border-muted"),
     },
   });
-  
+
   const updatedImage = UpdatedImage.configure({
     HTMLAttributes: {
       class: cx("rounded-lg border border-muted"),
     },
   });
-  
+
   const taskList = TaskList.configure({
     HTMLAttributes: {
       class: cx("not-prose pl-2 "),
@@ -70,13 +69,13 @@ import {
     },
     nested: true,
   });
-  
+
   const horizontalRule = HorizontalRule.configure({
     HTMLAttributes: {
       class: cx("mt-4 mb-6 border-t border-muted-foreground"),
     },
   });
-  
+
   const starterKit = StarterKit.configure({
     bulletList: {
       HTMLAttributes: {
@@ -116,27 +115,27 @@ import {
     },
     gapcursor: false,
   });
-  
+
   const codeBlockLowlight = CodeBlockLowlight.configure({
     // configure lowlight: common /  all / use highlightJS in case there is a need to specify certain language grammars only
     // common: covers 37 language grammars which should be good enough in most cases
     lowlight: createLowlight(common),
   });
-  
+
   const youtube = Youtube.configure({
     HTMLAttributes: {
       class: cx("rounded-lg border border-muted"),
     },
     inline: false,
   });
-  
+
   const twitter = Twitter.configure({
     HTMLAttributes: {
       class: cx("not-prose"),
     },
     inline: false,
   });
-  
+
   const mathematics = Mathematics.configure({
     HTMLAttributes: {
       class: cx("text-foreground rounded p-1 hover:bg-accent cursor-pointer"),
@@ -145,20 +144,12 @@ import {
       throwOnError: false,
     },
   });
-  
+
   const characterCount = CharacterCount.configure();
-  
-  const markdownExtension = MarkdownExtension.configure({
-    html: true,
-    tightLists: true,
-    tightListClass: "tight",
-    bulletListMarker: "-",
-    linkify: false,
-    breaks: false,
-    transformPastedText: false,
-    transformCopiedText: false,
-  });
-  
+
+  // Markdown extension is not available in the current version of Novel
+  // Removed reference to MarkdownExtension
+
   export const defaultExtensions = [
     starterKit,
     placeholder,
@@ -175,7 +166,7 @@ import {
     mathematics,
     characterCount,
     TiptapUnderline,
-    markdownExtension,
+    // markdownExtension removed
     HighlightExtension,
     TextStyle,
     Color,

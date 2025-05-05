@@ -1,8 +1,6 @@
 'use client';
 
 import {
-  Check,
-  ChevronRight,
   Heading1,
   Heading2,
   Heading3,

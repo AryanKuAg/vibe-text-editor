@@ -6,5 +6,5 @@ export interface SuggestionItem {
   description: string;
   searchTerms?: string[];
   icon: ReactNode;
-  command: (props: { editor: Editor; range: any }) => void;
+  command: (props: { editor: Editor; range: { from: number; to: number } }) => void;
 }

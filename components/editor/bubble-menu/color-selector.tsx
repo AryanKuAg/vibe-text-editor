@@ -130,12 +130,13 @@ export function ColorSelector({ open, onOpenChange }: ColorSelectorProps) {
               key={index}
               onSelect={() => {
                 editor.commands.unsetColor();
-                name !== "Default" &&
+                if (name !== "Default") {
                   editor
                     .chain()
                     .focus()
                     .setColor(color || "")
                     .run();
+                }
               }}
               className="flex cursor-pointer items-center justify-between px-2 py-1 text-sm hover:bg-accent">
               <div className="flex items-center gap-2">
@@ -154,7 +155,9 @@ export function ColorSelector({ open, onOpenChange }: ColorSelectorProps) {
               key={index}
               onSelect={() => {
                 editor.commands.unsetHighlight();
-                name !== "Default" && editor.commands.setHighlight({ color });
+                if (name !== "Default") {
+                  editor.commands.setHighlight({ color });
+                }
               }}
               className="flex cursor-pointer items-center justify-between px-2 py-1 text-sm hover:bg-accent">
               <div className="flex items-center gap-2">

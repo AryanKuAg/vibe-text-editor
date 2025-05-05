@@ -3,11 +3,11 @@ import connectToDatabase from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  request: NextRequest
+): Promise<NextResponse> {
+  const id = request.nextUrl.pathname.split('/').pop() || '';
   try {
-    const { id } = params;
+    // id is extracted from the URL path
 
     await connectToDatabase();
     const blog = await Blog.findById(id);
@@ -24,11 +24,11 @@ export async function GET(
 }
 
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  request: NextRequest
+): Promise<NextResponse> {
+  const id = request.nextUrl.pathname.split('/').pop() || '';
   try {
-    const { id } = params;
+    // id is extracted from the URL path
     const { title, content } = await request.json();
 
     if (!title || !content) {
@@ -66,11 +66,11 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  request: NextRequest
+): Promise<NextResponse> {
+  const id = request.nextUrl.pathname.split('/').pop() || '';
   try {
-    const { id } = params;
+    // id is extracted from the URL path
 
     await connectToDatabase();
     const deletedBlog = await Blog.findByIdAndDelete(id);
