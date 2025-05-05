@@ -6,8 +6,9 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import NovelEditor from '@/components/NovelEditor';
+import NovelEditorWrapper from '@/components/NovelEditorWrapper';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import StorageLimitDialog from '@/components/StorageLimitDialog';
 
 export default function EditBlogPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -16,16 +17,17 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  
+  const [isStorageLimitDialogOpen, setIsStorageLimitDialogOpen] = useState(false);
+
   useEffect(() => {
     const fetchBlog = async () => {
       try {
         const response = await fetch(`/api/blogs/${params.id}`);
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch blog');
         }
-        
+
         const blog = await response.json();
         setTitle(blog.title);
         setContent(blog.content);
@@ -37,25 +39,25 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         setIsLoading(false);
       }
     };
-    
+
     fetchBlog();
   }, [params.id, router]);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
       toast.error('Please enter a title');
       return;
     }
-    
+
     if (!content.trim()) {
       toast.error('Please enter some content');
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch(`/api/blogs/${params.id}`, {
         method: 'PUT',
@@ -64,46 +66,54 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         },
         body: JSON.stringify({ title, content }),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to update blog');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update blog');
       }
-      
+
       toast.success('Blog updated successfully');
       router.push(`/view/${params.id}`);
       router.refresh();
     } catch (error) {
       console.error('Error updating blog:', error);
-      toast.error('Failed to update blog');
+
+      // Check if it's a storage limit error
+      if (error instanceof Error && error.message.includes('Database storage limit reached')) {
+        setIsStorageLimitDialogOpen(true);
+      } else {
+        toast.error(error instanceof Error ? error.message : 'Failed to update blog');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   const handleDelete = async () => {
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch(`/api/blogs/${params.id}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to delete blog');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete blog');
       }
-      
+
       toast.success('Blog deleted successfully');
       router.push('/');
       router.refresh();
     } catch (error) {
       console.error('Error deleting blog:', error);
-      toast.error('Failed to delete blog');
+      toast.error(error instanceof Error ? error.message : 'Failed to delete blog');
     } finally {
       setIsSubmitting(false);
       setIsDeleteDialogOpen(false);
     }
   };
-  
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -114,20 +124,20 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
       </div>
     );
   }
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Edit Blog</h1>
-        <Button 
-          variant="destructive" 
+        <Button
+          variant="destructive"
           onClick={() => setIsDeleteDialogOpen(true)}
           disabled={isSubmitting}
         >
           Delete Blog
         </Button>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
@@ -139,12 +149,16 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
             required
           />
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="content">Content</Label>
-          <NovelEditor content={content} onChange={setContent} />
+          <NovelEditorWrapper
+            content={content}
+            onChange={setContent}
+            placeholder="Edit your blog post here..."
+          />
         </div>
-        
+
         <div className="flex justify-end gap-4">
           <Button
             type="button"
@@ -159,7 +173,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
           </Button>
         </div>
       </form>
-      
+
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -169,15 +183,15 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleDelete}
               disabled={isSubmitting}
             >
@@ -186,6 +200,11 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <StorageLimitDialog
+        open={isStorageLimitDialogOpen}
+        onOpenChange={setIsStorageLimitDialogOpen}
+      />
     </div>
   );
 }

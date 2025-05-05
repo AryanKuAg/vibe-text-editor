@@ -1,0 +1,109 @@
+/* Additional overrides to make Notion content look exactly like native Notion */
+
+/* Remove any back to top buttons */
+.notion-page > div > a[href="#top"] {
+  display: none !important;
+}
+
+/* Remove any container width limitations */
+.notion-container,
+.notion-container-wrapper,
+.notion-container-inner,
+.notion-container-content {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Remove any horizontal margins */
+.notion-page > div > div {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  max-width: none !important;
+}
+
+/* Make sure the page content takes up the full width */
+.notion-page-content {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Remove any extra padding on blocks */
+.notion-block {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Make sure images are full width */
+.notion-image {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Remove any extra spacing around the page */
+body, html {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+/* Hide any UI elements that might be added by react-notion-x */
+.notion-header {
+  display: none !important;
+}
+
+/* Make sure the page title is displayed properly */
+.notion-title {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  width: 100% !important;
+}
+
+/* Remove any extra padding on mobile */
+@media (max-width: 768px) {
+  .notion-page {
+    padding: 0 !important;
+  }
+
+  .notion-page > div {
+    padding: 0 !important;
+  }
+}
+
+/* Style the back button */
+.notion-back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.notion-back-button:hover {
+  opacity: 1;
+}
+
+.notion-back-button a {
+  color: #3291ff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+/* Hide any other back buttons */
+.notion-header-block a[href="/notion-blogs"] {
+  display: none !important;
+}

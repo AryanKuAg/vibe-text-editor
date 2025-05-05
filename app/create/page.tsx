@@ -6,29 +6,31 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import NovelEditor from '@/components/NovelEditor';
+import NovelEditorWrapper from '@/components/NovelEditorWrapper';
+import StorageLimitDialog from '@/components/StorageLimitDialog';
 
 export default function CreateBlogPage() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isStorageLimitDialogOpen, setIsStorageLimitDialogOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
       toast.error('Please enter a title');
       return;
     }
-    
+
     if (!content.trim()) {
       toast.error('Please enter some content');
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/blogs', {
         method: 'POST',
@@ -37,17 +39,24 @@ export default function CreateBlogPage() {
         },
         body: JSON.stringify({ title, content }),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to create blog');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create blog');
       }
-      
+
       toast.success('Blog created successfully');
       router.push('/');
       router.refresh();
     } catch (error) {
       console.error('Error creating blog:', error);
-      toast.error('Failed to create blog');
+
+      // Check if it's a storage limit error
+      if (error instanceof Error && error.message.includes('Database storage limit reached')) {
+        setIsStorageLimitDialogOpen(true);
+      } else {
+        toast.error(error instanceof Error ? error.message : 'Failed to create blog');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -56,7 +65,7 @@ export default function CreateBlogPage() {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8">Create New Blog</h1>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
@@ -68,12 +77,16 @@ export default function CreateBlogPage() {
             required
           />
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="content">Content</Label>
-          <NovelEditor content={content} onChange={setContent} />
+          <NovelEditorWrapper
+            content={content}
+            onChange={setContent}
+            placeholder="Write your blog post here..."
+          />
         </div>
-        
+
         <div className="flex justify-end gap-4">
           <Button
             type="button"
@@ -88,6 +101,11 @@ export default function CreateBlogPage() {
           </Button>
         </div>
       </form>
+
+      <StorageLimitDialog
+        open={isStorageLimitDialogOpen}
+        onOpenChange={setIsStorageLimitDialogOpen}
+      />
     </div>
   );
 }

@@ -1,0 +1,27 @@
+/* Fix for blog card image top padding */
+
+/* Remove top padding from card */
+.card-no-top-padding {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Remove top padding from image container */
+.card-image-container {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+/* Ensure image touches the top of the card */
+.card-image-container > div {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Override any potential framework styles */
+[data-slot="card"] > div:first-child {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
